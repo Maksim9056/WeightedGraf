@@ -179,6 +179,146 @@ namespace ConsoleApp15
 
         }
 
+
+        //public Dictionary<string, double> Dijkstra(string start)
+        //{
+        //    if (!graph.ContainsKey(start))
+        //    {
+        //        throw new ArgumentException($"Start vertex {start} does not exist in the graph");
+        //    }
+
+        //    var distances = new Dictionary<string, double>();
+        //    var visited = new HashSet<string>();
+        //    var unvisited = new HashSet<string>(vertexList);
+
+        //    foreach (var vertex in vertexList)
+        //    {
+        //        distances[vertex] = double.PositiveInfinity;
+        //    }
+
+        //    distances[start] = 0;
+
+        //    while (unvisited.Count > 0)
+        //    {
+        //        var current = string.Empty;
+        //        foreach (var vertex in unvisited)
+        //        {
+        //            if (string.IsNullOrEmpty(current) || distances[vertex] < distances[current])
+        //            {
+        //                current = vertex;
+        //            }
+        //        }
+
+        //        unvisited.Remove(current);
+        //        visited.Add(current);
+
+        //        if (!graph.ContainsKey(current))
+        //        {
+        //            continue;
+        //        }
+
+        //        foreach (var edge in graph[current])
+        //        {
+        //            var neighbor = edge.Item1;
+        //            var weight = edge.Item2;
+
+        //            if (!visited.Contains(neighbor))
+        //            {
+        //                var totalWeight = distances[current] + weight;
+        //                if (totalWeight < distances[neighbor])
+        //                {
+        //                    distances[neighbor] = totalWeight;
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return distances;
+        //}
+        public void Dijkstra(string start)
+        {
+            if (!graph.ContainsKey(start))
+            {
+                throw new ArgumentException($"Start vertex {start} does not exist in the graph");
+            }
+
+            var distances = new Dictionary<string, double>();
+            var visited = new HashSet<string>();
+            var unvisited = new HashSet<string>(counter);
+
+            foreach (var vertex in counter)
+            {
+                distances[vertex] = double.PositiveInfinity;
+            }
+
+            distances[start] = 0;
+
+            while (unvisited.Count > 0)
+            {
+                var current = string.Empty;
+                foreach (var vertex in unvisited)
+                {
+                    if (string.IsNullOrEmpty(current) || distances[vertex] < distances[current])
+                    {
+                        current = vertex;
+                    }
+                }
+
+                unvisited.Remove(current);
+                visited.Add(current);
+
+                if (!graph.ContainsKey(current))
+                {
+                    continue;
+                }
+
+                foreach (var edge in graph[current])
+                {
+                    var neighbor = edge.Item1;
+                    var weight = edge.Item2;
+
+                    if (!visited.Contains(neighbor))
+                    {
+                        var totalWeight = distances[current] + weight;
+                        if (totalWeight < distances[neighbor])
+                        {
+                            distances[neighbor] = totalWeight;
+                        }
+                    }
+                }
+
+                VisualizeDijkstraStep(current, distances);
+            }
+
+            VisualizeFinalDistances(distances);
+        }
+        private void VisualizeFinalDistances(Dictionary<string, double> distances)
+        {
+            Console.WriteLine("Final Distances");
+            Console.WriteLine("-------------------");
+
+            foreach (var vertex in counter)
+            {
+                var distance = distances[vertex] == double.PositiveInfinity ? "inf" : distances[vertex].ToString("0.#");
+                Console.WriteLine($"{vertex}: {distance}");
+            }
+        }
+
+        private void VisualizeDijkstraStep(string current, Dictionary<string, double> distances)
+        {
+            Console.WriteLine("Visited Node: " + current);
+            Console.WriteLine("-------------------");
+
+            foreach (var vertex in counter)
+            {
+                var distance = distances[vertex] == double.PositiveInfinity ? "inf" : distances[vertex].ToString("0.#");
+                Console.WriteLine($"{vertex}: {distance}");
+            }
+
+            Console.WriteLine();
+        }
+
+
         public void ShortestPathsBFS(string startNode)
         {
             Dictionary<string, double> distances = new Dictionary<string, double>();
@@ -276,6 +416,11 @@ namespace ConsoleApp15
             Console.WriteLine("Алгоритм ближайщиего пути");
 
             graf.ShortestPathsBFS("MIT");
+            Console.WriteLine();
+
+            Console.WriteLine();
+
+            graf.Dijkstra("MIT");
 
             Console.WriteLine("Выводим матрицу");
             var arr = graf.AdjacencyMatrixCalc();
